@@ -1,7 +1,7 @@
 # KITTI Track Collection (KTC) devkit
 
 This repository contains the mined tracks and tools, extracted from KITTI Raw dataset in the scope of the following publication:
-**Large-Scale Object Discovery and Detector Adaptation from Unlabeled Video**
+**Large-Scale Object Discovery and Detector Adaptation from Unlabeled Video [paper](https://arxiv.org/pdf/1712.08832.pdf)**
 
 By Aljosa Osep, Paul Voigtlaender (equal contribution), Jonathon Luiten, Stefan Breuers, and Bastian Leibe
 
@@ -13,9 +13,16 @@ In order to use the python tools, your setup has to meet the following minimum r
 * Python (2.7)
   * PIL or Pillow (3.4.2)
   * Google protobuf (3.4.x)
+  
+Note, that in order to access the image data, you need KITTI Raw dataset, you can get it [here](http://www.cvlibs.net/datasets/kitti/raw_data.php). 
+We recommend using the [download script] (http://www.cvlibs.net/download.php?file=raw_data_downloader.zip).
 
 ## Using the tracks data
-TODO
+You can find the mined tracks in ROOT/tracks/kitti_format/%SEQUENCE_NAME%.txt (KITTI format). For details about the data format, 
+please see [KITTI tracking dataset web page](http://www.cvlibs.net/datasets/kitti/eval_tracking.php).
+
+In addition, we also provide proto files, containing additional information (such as pixel masks), ROOT/tracks/proto_format/%SEQUENCE_NAME%_plus_some_weird_stuff.txt. 
+The protbuf message format is defined in SRC/proto/hypotheses.proto.
 
 ## Using the tools
 TODO
@@ -24,7 +31,7 @@ If you have any issues or questions with the data or the code, please contact me
 
 ## Citing
 
-If you find this code useful in your research, you should cite:
+If you find this data or tools useful in your reasearch, you should cite:
 
     @article{OsepVoigtlaender18arxiv,
         title={Large-Scale Object Discovery and Detector Adaptation from Unlabeled Video},
