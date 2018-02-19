@@ -3,7 +3,7 @@
 This repository contains the mined tracks and tools, extracted from KITTI Raw dataset in the scope of the following publication:
 **Large-Scale Object Discovery and Detector Adaptation from Unlabeled Video [paper link](https://arxiv.org/pdf/1712.08832.pdf)**
 
-By [Aljosa Osep](https://www.vision.rwth-aachen.de/person/13/), []Paul Voigtlaender](https://www.vision.rwth-aachen.de/person/197/) (equal contribution), Jonathon Luiten, Stefan Breuers, and Bastian Leibe
+By [Aljosa Osep](https://www.vision.rwth-aachen.de/person/13/), [Paul Voigtlaender](https://www.vision.rwth-aachen.de/person/197/) (equal contribution), Jonathon Luiten, Stefan Breuers, and Bastian Leibe
 
 ![Alt text](img/header.png?raw=true "KTC tracks.")
 
