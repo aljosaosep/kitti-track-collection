@@ -27,7 +27,8 @@ The protbuf message format is defined in `SRC/proto/hypotheses.proto`.
 ## Using the tools
 TODO
 
-If you have any issues or questions with the data or the code, please contact me https://www.vision.rwth-aachen.de/person/13/
+If you have any issues or questions with the data or the code, 
+please contact [Aljosa Osep](https://www.vision.rwth-aachen.de/person/13/) or [Paul Voigtlaender](https://www.vision.rwth-aachen.de/person/197/)/
 
 ## Citing
 
