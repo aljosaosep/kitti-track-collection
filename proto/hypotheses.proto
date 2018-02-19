@@ -1,0 +1,136 @@
+syntax = "proto3";
+
+package hypo_export;
+
+message Pose3D {
+	 float x = 1;
+	 float y = 2;
+	 float z = 3;
+}
+
+message Vec2D {
+	 float x = 1;
+	 float z = 2;
+}
+
+message VecXD {
+	repeated float values = 1;
+}
+
+message VecXI {
+	repeated int32 values = 1;
+}
+
+message BoundingBox2D {
+	 int32 x0 = 1;
+	 int32 y0 = 2;
+	 int32 w = 3;
+	 int32 h = 4;
+}
+
+message BoundingBox3D {
+	 float x = 1;
+	 float y = 2;
+	 float z = 3;
+	 float w = 4;
+	 float h = 5;
+	 float l = 6;
+}
+
+message Mask {
+	string rle_string = 4;
+
+	// Note, that this is whole-mask size (ie. image size)! Not a crop!
+	int32 mask_width = 5;
+	int32 mask_height = 6;
+}
+
+message ObjectProposal3D {
+	Mask mask = 1;
+	BoundingBox2D bounding_box_2D = 2;
+	BoundingBox3D bounding_box_3D = 3;
+	Pose3D pos3d = 4;
+	float score = 5;
+	repeated float pose_covariance_matrix = 6;
+	repeated int32 ground_indices = 7;
+	repeated Vec2D convex_hull = 8;
+	repeated Vec2D scale_pairs = 9;
+}
+
+message Hypothesis {
+
+	message Inlier {
+		 int32 timestamp = 1;
+		 int32 index = 2;
+		 float association_score = 3;
+		 float inlier_score = 4;
+		repeated float data_association_terms = 5; 
+	}
+
+
+
+	message CategoryPosterior {
+		repeated float posterior = 1;
+	}
+
+	message ClassificationInfo {
+		map<int32, BoundingBox2D> bounding_boxes_2D_with_timestamps = 1;
+		map<int32, CategoryPosterior> posteriors_with_timestamps = 2;
+		map<int32, string> category_name_MAP = 3;
+	}
+
+	message InferenceInfo {
+		map<int32, BoundingBox2D> bounding_boxes_2D_with_timestamps = 1;
+		map<int32, CategoryPosterior> posteriors_with_timestamps = 2;
+		map<int32, string> category_name_MAP = 3;
+		map<int32, float> unaries = 4;
+		map<int32, VecXD> unaries_additional_info = 5;
+		map<int32, bool> selected_with_timestamps = 6;
+		// bool selected = 6;
+		// map<int32, VecXI> selected_hypotheses_indices = 7;
+	}
+
+
+	message Measurements3D {
+		repeated Pose3D points = 1;
+	}
+
+    	message AnnotatedCategory {
+		string name = 1;
+	}
+
+	repeated int32 timestamps = 1;
+
+	map<int32, Pose3D> poses_3D_with_timestamps = 2;
+	map<int32, Pose3D> poses_3D_camera_space_with_timestamps = 3;
+	map<int32, BoundingBox2D> bounding_boxes_2D_with_timestamps = 4;
+	map<int32, BoundingBox3D> bounding_boxes_3D_with_timestamps = 5;
+	map<int32, Mask> masks_with_timestamps = 6;
+	map<int32, Measurements3D> measurements_3D_with_timestamps = 7;
+
+	repeated Inlier inliers = 8;
+	CategoryPosterior category_posterior = 9;
+
+	int32 id = 11; 
+	string sequence_name = 12;
+	string dataset_name = 13;
+	string category_name = 14;
+
+	map<int32, Vec2D> velocities_XZ_camera_space_with_timestamps = 15;
+
+	ClassificationInfo classification_info = 16;
+	InferenceInfo inference_info = 17;
+
+	map<int32, VecXD> features_with_timestamps = 18;
+
+	AnnotatedCategory annotated_category = 19;
+	map<int32, BoundingBox2D> bounding_boxes_2d_extended_with_timestamps = 20;
+}
+
+message ObjectProposals {
+	repeated ObjectProposal3D proposals = 1;
+}
+
+message HypothesisSet {
+	repeated Hypothesis hypotheses = 1;
+}
