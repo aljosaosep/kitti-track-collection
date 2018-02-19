@@ -1,9 +1,9 @@
 # KITTI Track Collection (KTC) devkit
 
 This repository contains the mined tracks and tools, extracted from KITTI Raw dataset in the scope of the following publication:
-**Large-Scale Object Discovery and Detector Adaptation from Unlabeled Video [paper](https://arxiv.org/pdf/1712.08832.pdf)**
+**Large-Scale Object Discovery and Detector Adaptation from Unlabeled Video [paper link](https://arxiv.org/pdf/1712.08832.pdf)**
 
-By Aljosa Osep, Paul Voigtlaender (equal contribution), Jonathon Luiten, Stefan Breuers, and Bastian Leibe
+By [Aljosa Osep](https://www.vision.rwth-aachen.de/person/13/), []Paul Voigtlaender](https://www.vision.rwth-aachen.de/person/197/) (equal contribution), Jonathon Luiten, Stefan Breuers, and Bastian Leibe
 
 ![Alt text](img/header.png?raw=true "KTC tracks.")
 
@@ -15,14 +15,14 @@ In order to use the python tools, your setup has to meet the following minimum r
   * Google protobuf (3.4.x)
   
 Note, that in order to access the image data, you need KITTI Raw dataset, you can get it [here](http://www.cvlibs.net/datasets/kitti/raw_data.php). 
-We recommend using the [download script] (http://www.cvlibs.net/download.php?file=raw_data_downloader.zip).
+We recommend using the [download script](http://www.cvlibs.net/download.php?file=raw_data_downloader.zip).
 
 ## Using the tracks data
-You can find the mined tracks in ROOT/tracks/kitti_format/%SEQUENCE_NAME%.txt (KITTI format). For details about the data format, 
+You can find the mined tracks in `ROOT/tracks/kitti_format/%SEQUENCE_NAME%.txt` (KITTI format). For details about the data format, 
 please see [KITTI tracking dataset web page](http://www.cvlibs.net/datasets/kitti/eval_tracking.php).
 
-In addition, we also provide proto files, containing additional information (such as pixel masks), ROOT/tracks/proto_format/%SEQUENCE_NAME%_plus_some_weird_stuff.txt. 
-The protbuf message format is defined in SRC/proto/hypotheses.proto.
+In addition, we also provide proto files, containing additional information (such as pixel masks), `ROOT/tracks/proto_format/%SEQUENCE_NAME%_plus_some_weird_stuff.txt`. 
+The protbuf message format is defined in `SRC/proto/hypotheses.proto`.
 
 ## Using the tools
 TODO
