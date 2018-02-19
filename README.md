@@ -1,9 +1,10 @@
 # KITTI Track Collection (KTC) devkit
 
-This repository contains the mined tracks and tools, extracted from KITTI Raw dataset in the scope of the following publication:
+This repository contains the mined tracks and tools, extracted from the KITTI Raw dataset in the scope of the following publication:
 **Large-Scale Object Discovery and Detector Adaptation from Unlabeled Video [paper link](https://arxiv.org/pdf/1712.08832.pdf)**
 
-By [Aljosa Osep](https://www.vision.rwth-aachen.de/person/13/), [Paul Voigtlaender](https://www.vision.rwth-aachen.de/person/197/) (equal contribution), Jonathon Luiten, Stefan Breuers, and Bastian Leibe
+By [Aljosa Osep](https://www.vision.rwth-aachen.de/person/13/), [Paul Voigtlaender](https://www.vision.rwth-aachen.de/person/197/) (equal contribution), 
+[Jonathon Luiten](https://jonathonluiten.wordpress.com/), [Stefan Breuers](https://www.vision.rwth-aachen.de/person/12/), and [Bastian Leibe](https://www.vision.rwth-aachen.de/person/1/)
 
 ![Alt text](img/header.png?raw=true "KTC tracks.")
 
@@ -14,7 +15,7 @@ In order to use the python tools, your setup has to meet the following minimum r
   * PIL or Pillow (3.4.2)
   * Google protobuf (3.4.x)
   
-Note, that in order to access the image data, you need KITTI Raw dataset, you can get it [here](http://www.cvlibs.net/datasets/kitti/raw_data.php). 
+Note, that in order to access the image data, you need the KITTI Raw dataset, you can get it [here](http://www.cvlibs.net/datasets/kitti/raw_data.php). 
 We recommend using the [download script](http://www.cvlibs.net/download.php?file=raw_data_downloader.zip).
 
 ## Using the tracks data
@@ -24,11 +25,10 @@ please see [KITTI tracking dataset web page](http://www.cvlibs.net/datasets/kitt
 In addition, we also provide proto files, containing additional information (such as pixel masks), `ROOT/tracks/proto_format/%SEQUENCE_NAME%_plus_some_weird_stuff.txt`. 
 The protbuf message format is defined in `SRC/proto/hypotheses.proto`.
 
+For track mining, we used the [CAMOT tracker](https://www.vision.rwth-aachen.de/publication/00162/).
+
 ## Using the tools
 TODO
-
-If you have any issues or questions with the data or the code, 
-please contact [Aljosa Osep](https://www.vision.rwth-aachen.de/person/13/) or [Paul Voigtlaender](https://www.vision.rwth-aachen.de/person/197/)/
 
 ## Citing
 
@@ -40,8 +40,21 @@ If you find this data or tools useful in your reasearch, you should cite:
         journal={arXiv preprint arXiv:1712.08832},
         year={2018}
     }
+    
+    @article{Osep18ICRA,
+      author = {O\v{s}ep, Aljo\v{s}a and Mehner, Wolfgang and Voigtlaender, Paul and Leibe, Bastian},
+      title = {Track, then Decide: Category-Agnostic Vision-based Multi-Object Tracking},
+      journal = {ICRA},
+      year = {2018}
+    }
+
+
+If you have any issues or questions with the data or the code, 
+please contact [Aljosa Osep](https://www.vision.rwth-aachen.de/person/13/) or [Paul Voigtlaender](https://www.vision.rwth-aachen.de/person/197/).
 
 ## License
+
+If you need another license, please contact us.
 
 GNU General Public License (http://www.gnu.org/licenses/gpl.html)
 
