@@ -1,11 +1,9 @@
 # KITTI Track Collection (KTC) devkit
 
 This repository contains the mined tracks and tools, extracted from KITTI Raw dataset in the scope of the following publication:
-** Large-Scale Object Discovery and Detector Adaptation from Unlabeled Video **
+**Large-Scale Object Discovery and Detector Adaptation from Unlabeled Video**
 
-By Aljosa Osep*, Paul Voigtlaender*, Jonathon Luiten, Stefan Breuers, and Bastian Leibe
-
-* - equal contribution.
+By Aljosa Osep, Paul Voigtlaender (equal contribution), Jonathon Luiten, Stefan Breuers, and Bastian Leibe
 
 ![Alt text](img/header.png?raw=true "KTC tracks.")
 
