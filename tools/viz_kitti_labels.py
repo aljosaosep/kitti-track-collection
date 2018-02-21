@@ -61,7 +61,7 @@ def main(_):
 	this_seq_image_path = FLAGS.image_data_path.replace("%SEQUENCE%", seq_name)
 
 	# Make sure that the output_dir is there
-	if not os.path.isfile(FLAGS.output_dir):
+	if not os.path.isdir(FLAGS.output_dir):
 		raise Exception("Output dir %s does not exist."%FLAGS.output_dir)
 
 	# -----------------------------------
