@@ -25,9 +25,26 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA
 
 import os, glob, argparse
 import hypotheses_pb2
+import numpy as np
+import pycocotools.mask as cocomask
+import struct
 
 from PIL import Image, ImageDraw
 
+def MaskObjToRle(mask_obj):
+	# Fill RLE dict
+	rle = {}
+	rle['counts'] = mask_obj.rle_string
+	rle['size'] = [mask_obj.mask_height, mask_obj.mask_width]
+	return rle
+
+def UnpackMaskRLE(mask_obj):
+	rle = MaskObjToRle(mask_obj)
+
+	# Decode
+	M = np.squeeze(cocomask.decode(rle))  # Decode counts->mask
+	M_inds = np.flatnonzero(M > 0)  # Mask->inds, for those who like inds
+	return (M, M_inds)
 
 def get_frame_range(hypotheses):
 	all_frames = []
@@ -37,6 +54,12 @@ def get_frame_range(hypotheses):
 	end_frame = max(all_frames)
 	return (first_frame, end_frame)
 
+def RectUnion(rect_1, rect_2):
+	left = min([rect_1[0], rect_2[0]])
+	right = max([rect_1[0] + rect_1[2], rect_2[0] + rect_2[2]])
+	top = min([rect_1[1], rect_2[1]])
+	bottom = max([rect_1[1] + rect_1[3], rect_2[1] + rect_2[3]])
+	return [left, top, right - left, bottom - top]
 
 def load_hypos_from_proto(protos_dir):
 	if not os.path.isdir(protos_dir):
@@ -81,7 +104,7 @@ def main(_):
 	# ------------------------------------
 	#   +++ Transform to KITTI format +++
 	# ------------------------------------
-	output_dir = os.path.abspath(FLAGS.output_path)
+	output_dir = os.path.abspath(FLAGS.output_dir)
 
 	if not os.path.isdir(output_dir):
 		raise Exception("Error, no such output dir %s!" % output_dir)
@@ -103,6 +126,9 @@ def main(_):
 			# Fetch info from all hypos, defn. in this frame
 			for (hypo_idx, hypo) in enumerate(hypos):
 
+				if frame not in hypo.bounding_boxes_2D_with_timestamps.keys():
+					continue
+
 				# Load the image
 				image_path = this_seq_image_path % frame
 
@@ -110,12 +136,17 @@ def main(_):
 					raise Exception("Could not find image: %s." % image_path)
 
 				im = Image.open(image_path)
+				im = im.convert('RGBA')  # Add alpha, make things look sexy
 				draw = ImageDraw.Draw(im)
 
-				if frame in hypo.timestamps:
+				rect_union = None
+				points_bg = []
+				points = []
+				points_first_frame = []
+				for inlier_frame in hypo.bounding_boxes_2D_with_timestamps.keys():
 
 					# Bounding box
-					hypo_bbox = hypo.bounding_boxes_2D_with_timestamps[frame]
+					hypo_bbox = hypo.bounding_boxes_2D_with_timestamps[inlier_frame]
 
 					# Track ID
 					hypo_id = hypo.id
@@ -124,7 +155,7 @@ def main(_):
 					hypo_annot_categ = hypo.annotated_category.name
 
 					# 3D pos
-					hypo_pos = hypo.poses_3D_camera_space_with_timestamps[frame]
+					hypo_pos = hypo.poses_3D_camera_space_with_timestamps[inlier_frame]
 
 					# Draw all masks
 					color = not_so_tiny_palette[hypo_id]  # Get color based on the track id (lookup table)
@@ -134,12 +165,71 @@ def main(_):
 					y1 = hypo_bbox.y0
 					x2 = hypo_bbox.x0 + hypo_bbox.w
 					y2 = hypo_bbox.y0 + hypo_bbox.h
-					draw.rectangle(((x1, y1), (x2, y2)), outline=color)
+
+					w,h = im.size
+					if x1 < 0: x1 = 0
+					if x2 > w: x2 = w-1
+					if y1 < 0: y1 = 0
+					if y2 > h: y2 = h-1
+
+					rect_ = [x1, y1, x2-x1, y2-y1]
+					if rect_union is None:
+						rect_union = rect_
+					else:
+						rect_union = RectUnion(rect_union, rect_)
+
+					# Get mask
+					mask = hypo.masks_with_timestamps[inlier_frame]
+					mask_image, mask_inds = UnpackMaskRLE(mask)
+					nonzero_inds_x = np.where(mask_image == 1)[0]
+					nonzero_inds_y = np.where(mask_image == 1)[1]
+					for idx in range(0, len(nonzero_inds_x)):
+						y = nonzero_inds_y[idx]
+						x = nonzero_inds_x[idx]
+						points.append((y, x))
+
+						if inlier_frame == frame:
+							points_first_frame.append((y, x))
+
+
+					zero_inds_x = np.where(mask_image == 0)[0]
+					zero_inds_y = np.where(mask_image == 0)[1]
+					for idx in range(0, len(zero_inds_x)):
+						y = zero_inds_y[idx]
+						x = zero_inds_x[idx]
+						points_bg.append((y, x))
+
+				alpha = 0.5
+
+				pts_bg_minus_fg = list(set(points_bg)-set(points))# [x for item in points_bg if item not in points]
+				col_w = (255, 255, 255, int(255*alpha))
+				draw.point(pts_bg_minus_fg, fill=col_w)
+
+				color_tuple = struct.unpack('BBB', color[1::].decode('hex'))
+				col_rgba = (color_tuple[0], color_tuple[1], color_tuple[2], int(255.0 * alpha))
+				points_fg_minus_frame = list(set(points)-set(points_first_frame))# [x for item in points_bg if item not in points]
+				draw.point(points_fg_minus_frame, fill=col_rgba)
 
 				# Write image to dest dir
-				im.save(os.path.join(FLAGS.output_dir, 'seq_%s_hypo_%010d_frame_%010d.png'%(seq_name, hypo_id, frame)))
 
+				# Crop img using rect_union
+				width, height = im.size
 
+				# Draw rect + text
+				x1 = rect_union[0]
+				y1 = rect_union[1]
+				x2 = rect_union[0] + rect_union[2]
+				y2 = rect_union[1] + rect_union[3]
+
+				if x1 < 0: x1 = 0
+				if x2 > width: x2 = width - 1
+				if y1 < 0: y1 = 0
+				if y2 > height: y2 = height - 1
+
+				im2 = im.crop((x1, y1, x2, y2))  # (max(0, rect_union[0]), max(0,rect_union[1]), min(rect_union[2], width-1), min(rect_union[3], height-1)))
+
+				im2.save(os.path.join(FLAGS.output_dir, 'seq_%s_hypo_%010d_frame_%010d.png'%(seq_name, hypo_idx, frame)))
+				del draw
 
 		f_kitti.close()
 
@@ -147,13 +237,13 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 
 	parser.add_argument(
-		"image_path",
+		"image_data_path",
 		type=str,
 		help="Specify path to images, eg. /home/dog/datasets/kitti_raw_preprocessed/%SEQUENCE%/image_02/%010d.png."
 	)
 
 	parser.add_argument(
-		"output_dir",
+		"--output_dir",
 		type=str,
 		default="/tmp/viz_tracks",
 		help="Specify track images output dir."
