@@ -4,7 +4,7 @@ This repository contains the mined tracks and tools, extracted from the KITTI Ra
 **Large-Scale Object Discovery and Detector Adaptation from Unlabeled Video [paper link](https://arxiv.org/pdf/1712.08832.pdf)**
 
 By [Aljosa Osep](https://www.vision.rwth-aachen.de/person/13/), [Paul Voigtlaender](https://www.vision.rwth-aachen.de/person/197/) (equal contribution), 
-[Jonathon Luiten](https://jonathonluiten.wordpress.com/), [Stefan Breuers](https://www.vision.rwth-aachen.de/person/12/), and [Bastian Leibe](https://www.vision.rwth-aachen.de/person/1/)
+[Jonathon Luiten](https://www.vision.rwth-aachen.de/person/216/), [Stefan Breuers](https://www.vision.rwth-aachen.de/person/12/), and [Bastian Leibe](https://www.vision.rwth-aachen.de/person/1/)
 
 ![Alt text](img/header.png?raw=true "KTC tracks.")
 
